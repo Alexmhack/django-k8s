@@ -1,0 +1,40 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: fastapi-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: fastapi-deployment
+  template:
+    metadata:
+      labels:
+        app: fastapi-deployment
+    spec:
+      containers:
+      - name: fastapi
+        image: codingforentrepreneurs/iac-python:latest  # docker public image for simple FastAPI app
+        env:
+          - name: PORT
+            value: "8080"
+        ports:
+        - containerPort: 8080
+
+
+---
+
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: fastapi-service
+spec:
+  type: LoadBalancer
+  ports:
+    - name: http
+      protocol: TCP
+      port: 80
+      targetPort: 8080
+  selector:
+    app: fastapi-deployment
